@@ -23,37 +23,69 @@ class MusicianSerializer(serializers.ModelSerializer):
             Album.objects.create(artist=musician, **album_data)
         return musician
 
+    # def update(self, instance, validated_data):
+    #     albums_data = validated_data.pop('album_musician')
+    #     albums = (instance.album_musician).all()
+    #     albums = list(albums)
+    #     instance.first_name = validated_data.get('first_name', instance.first_name)
+    #     instance.last_name = validated_data.get('last_name', instance.last_name)
+    #     instance.instrument = validated_data.get('instrument', instance.instrument)
+    #     instance.save()
+    #
+    #     # for item in albums:
+    #     #     print(item.name)
+    #     #     print(item.release_date)
+    #     #     print(item.artist)
+    #
+    #
+    #     print(albums_data)
+    #
+    #     album_ids=list()
+    #     for album_item in albums_data:
+    #         album_ids.append(album_item['artist'])
+    #
+    #     print(album_ids)
+    #     for item in albums:
+    #             if item.artist not in album_ids:
+    #                 item.delete()
+    #
+    #     for album_data in albums_data:
+    #         album = albums.pop(0)
+    #         album.artist = album_data.get('artist', album.artist)
+    #         album.name = album_data.get('name', album.name)
+    #         album.release_date = album_data.get('release_date', album.release_date)
+    #         album.num_stars = album_data.get('num_stars', album.num_stars)
+    #         album.save()
+    #     return instance
+
     def update(self, instance, validated_data):
         albums_data = validated_data.pop('album_musician')
         albums = (instance.album_musician).all()
         albums = list(albums)
+
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.instrument = validated_data.get('instrument', instance.instrument)
         instance.save()
 
-        # for item in albums:
-        #     print(item.name)
-        #     print(item.release_date)
-        #     print(item.artist)
+        #print(instance.id)
 
 
-        print(albums_data)
 
-        album_ids=list()
-        for album_item in albums_data:
-            album_ids.append(album_item['artist'])
-
-        print(album_ids)
-        for item in albums:
-                if item.artist not in album_ids:
-                    item.delete()
 
         for album_data in albums_data:
-            album = albums.pop(0)
-            album.artist = album_data.get('artist', album.artist)
-            album.name = album_data.get('name', album.name)
-            album.release_date = album_data.get('release_date', album.release_date)
-            album.num_stars = album_data.get('num_stars', album.num_stars)
-            album.save()
+            if albums:
+                    album = albums.pop(0)
+
+                    print(album.id)
+                    print(album_data.get('id', album.id))
+
+                    album.name = album_data.get('name', album.name)
+                    album.release_date = album_data.get('release_date', album.release_date)
+                    album.num_stars = album_data.get('num_stars', album.num_stars)
+                    album.save()
+            else:
+                Album.objects.create(artist_id=instance.id,**album_data)
+
         return instance
+
